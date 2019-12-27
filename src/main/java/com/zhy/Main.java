@@ -1,7 +1,5 @@
 package com.zhy;
 
-import java.util.*;
-
 public class Main {
     /**
      * 启动类
