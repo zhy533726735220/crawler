@@ -37,8 +37,8 @@ public class CrawlerDaoImpl implements ICrawlerDao {
     public int updateLink(String url) {
         int result = 0;
         try (SqlSession sqlSession = this.sqlSessionFactory.openSession()) {
-           result = sqlSession.update("com.zhy.dao.mapper.updateLink", url);
-           sqlSession.commit();
+            result = sqlSession.update("com.zhy.dao.mapper.updateLink", url);
+            sqlSession.commit();
         }
         return result;
     }
@@ -54,7 +54,7 @@ public class CrawlerDaoImpl implements ICrawlerDao {
     }
 
     @Override
-    public  int isExistUrl(String url) {
+    public int isExistUrl(String url) {
         int result = 0;
         try (SqlSession sqlSession = this.sqlSessionFactory.openSession()) {
             result = sqlSession.selectOne("com.zhy.dao.mapper.isExistUrl", url);

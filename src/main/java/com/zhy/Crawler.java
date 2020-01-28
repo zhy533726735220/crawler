@@ -1,5 +1,6 @@
 package com.zhy;
 
+import com.zhy.dao.CrawlerDaoImpl;
 import com.zhy.dao.ICrawlerDao;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -10,11 +11,7 @@ import java.io.IOException;
 
 public class Crawler extends Thread {
 
-    private ICrawlerDao iCrawlerDao;
-
-    public Crawler(ICrawlerDao iCrawlerDao) {
-        this.iCrawlerDao = iCrawlerDao;
-    }
+    private ICrawlerDao iCrawlerDao = new CrawlerDaoImpl();
 
     @Override
     public void run() {
@@ -30,6 +27,12 @@ public class Crawler extends Thread {
         }
     }
 
+    private synchronized String getUrl() {
+        String url = this.iCrawlerDao.selectNextAvailableLink();
+        this.iCrawlerDao.updateLink(url);
+        return url;
+    }
+
     private void parseHtml(String url) throws IOException {
         Document doc = Jsoup.connect(url).get();
         this.getContent(doc, url);
@@ -37,25 +40,19 @@ public class Crawler extends Thread {
         for (Element link : links) {
             String linkHref = link.attr("href");
             if (this.hitUrl(linkHref)) {
-                this.insertLink(linkHref);
+                try {
+
+                } catch (Exception e) {
+                    this.insertLink(linkHref);
+                }
             }
         }
 
     }
 
-    private synchronized String getUrl() {
-        String url = this.iCrawlerDao.selectNextAvailableLink();
-        this.iCrawlerDao.updateLink(url);
-        return url;
-    }
-
     private synchronized void insertLink(String linkHref) {
         if (this.iCrawlerDao.isExistUrl(linkHref) < 1) {
-            try {
-                this.iCrawlerDao.insertLink(linkHref);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            this.iCrawlerDao.insertLink(linkHref);
         }
     }
 

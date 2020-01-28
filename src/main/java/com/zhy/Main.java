@@ -1,15 +1,16 @@
 package com.zhy;
 
-import com.zhy.dao.CrawlerDaoImpl;
-import com.zhy.dao.ICrawlerDao;
-
 public class Main {
     public static void main(String[] args) {
 
-        ICrawlerDao iCrawlerDao = new CrawlerDaoImpl();
+        Crawler thread1 = new Crawler();
+        Crawler thread2 = new Crawler();
+        Crawler thread3 = new Crawler();
+        Crawler thread4 = new Crawler();
 
-        for (int i = 0; i < 4; i++) {
-            new Crawler(iCrawlerDao).start();
-        }
+        thread1.start();
+        thread2.start();
+        thread3.start();
+        thread4.start();
     }
 }
