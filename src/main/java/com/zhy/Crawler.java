@@ -1,6 +1,5 @@
 package com.zhy;
 
-import com.zhy.dao.CrawlerDaoImpl;
 import com.zhy.dao.ICrawlerDao;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -9,9 +8,13 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 
-public class Crawler extends Thread{
+public class Crawler extends Thread {
 
-    private ICrawlerDao iCrawlerDao = new CrawlerDaoImpl();
+    private ICrawlerDao iCrawlerDao;
+
+    public Crawler(ICrawlerDao iCrawlerDao) {
+        this.iCrawlerDao = iCrawlerDao;
+    }
 
     @Override
     public void run() {
@@ -27,7 +30,7 @@ public class Crawler extends Thread{
         }
     }
 
-    private  void parseHtml(String url) throws IOException {
+    private void parseHtml(String url) throws IOException {
         Document doc = Jsoup.connect(url).get();
         this.getContent(doc, url);
         Elements links = doc.getElementsByTag("a");
@@ -48,11 +51,15 @@ public class Crawler extends Thread{
 
     private synchronized void insertLink(String linkHref) {
         if (this.iCrawlerDao.isExistUrl(linkHref) < 1) {
-            this.iCrawlerDao.insertLink(linkHref);
+            try {
+                this.iCrawlerDao.insertLink(linkHref);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    private  void getContent(Document doc, String url) {
+    private void getContent(Document doc, String url) {
         Elements titleHtml = doc.getElementsByTag("title");
         Elements contentHtml = doc.select("section.art_content");
         if (contentHtml.size() > 0 && titleHtml.size() > 0) {
@@ -65,16 +72,16 @@ public class Crawler extends Thread{
         }
     }
 
-    private  boolean hitUrl(String linkHref) {
+    private boolean hitUrl(String linkHref) {
         return linkHref.contains("https://news.sina.cn") ||
-        linkHref.contains("https://travel.sina.cn") ||
-        linkHref.contains("https://finance.sina.cn") ||
-        linkHref.contains("https://sports.sina.cn") ||
-        linkHref.contains("https://ent.sina.cn") ||
-        linkHref.contains("https://tech.sina.cn") ||
-        linkHref.contains("https://video.sina.cn") ||
-        linkHref.contains("https://photo.sina.cn") ||
-        linkHref.contains("https://nba.sina.cn") ||
-        linkHref.contains("https://edu.sina.cn/");
+                linkHref.contains("https://travel.sina.cn") ||
+                linkHref.contains("https://finance.sina.cn") ||
+                linkHref.contains("https://sports.sina.cn") ||
+                linkHref.contains("https://ent.sina.cn") ||
+                linkHref.contains("https://tech.sina.cn") ||
+                linkHref.contains("https://video.sina.cn") ||
+                linkHref.contains("https://photo.sina.cn") ||
+                linkHref.contains("https://nba.sina.cn") ||
+                linkHref.contains("https://edu.sina.cn/");
     }
 }
