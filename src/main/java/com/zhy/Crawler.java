@@ -13,11 +13,18 @@ public class Crawler extends Thread {
 
     private ICrawlerDao iCrawlerDao = new CrawlerDaoImpl();
 
+    private Object lock;
+    public Crawler(Object lock) {
+        this.lock = lock;
+    }
+
     @Override
     public void run() {
         String url = "https://sina.cn";
         while (url != null) {
-            url = this.getUrl();
+            synchronized (this.lock) {
+                url = this.getUrl();
+            }
             try {
                 this.parseHtml(url);
             } catch (IOException e) {
@@ -27,7 +34,7 @@ public class Crawler extends Thread {
         }
     }
 
-    private synchronized String getUrl() {
+    private String getUrl() {
         String url = this.iCrawlerDao.selectNextAvailableLink();
         this.iCrawlerDao.updateLink(url);
         return url;
@@ -41,16 +48,16 @@ public class Crawler extends Thread {
             String linkHref = link.attr("href");
             if (this.hitUrl(linkHref)) {
                 try {
-
-                } catch (Exception e) {
                     this.insertLink(linkHref);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         }
 
     }
 
-    private synchronized void insertLink(String linkHref) {
+    private void insertLink(String linkHref) {
         if (this.iCrawlerDao.isExistUrl(linkHref) < 1) {
             this.iCrawlerDao.insertLink(linkHref);
         }
