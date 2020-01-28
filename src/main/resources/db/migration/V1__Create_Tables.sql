@@ -43,7 +43,9 @@ ALTER TABLE "public"."crawler_news" ALTER COLUMN id SET DEFAULT nextval('table_c
 DROP TABLE IF EXISTS "public"."links_to_be_processed";
 CREATE TABLE "public"."links_to_be_processed" (
   "url" varchar(255) COLLATE "pg_catalog"."default" NOT NULL,
-  "processed" bool
+  "processed" bool,
+  "created_at" timestamp(6),
+  "updated_at" timestamp(6)
 )
 ;
 ALTER TABLE "public"."links_to_be_processed" OWNER TO "postgres";

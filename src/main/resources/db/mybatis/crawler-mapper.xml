@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhy.dao.mapper">
+    <select id="selectNextAvailableLink" resultType="java.lang.String">
+        select url from links_to_be_processed where processed = 'f' limit 1;
+    </select>
+
+    <update id="updateLink">
+        UPDATE links_to_be_processed
+        SET
+            processed = 'T',
+            updated_at = now()
+        WHERE
+            url = #{url}
+    </update>
+
+    <insert id="insertLink">
+        INSERT INTO
+            links_to_be_processed
+            ( url, processed, created_at, updated_at )
+        VALUES
+            ( #{url}, 'f', now(), now())
+    </insert>
+
+    <select id="isExistUrl" resultType="java.lang.Integer">
+        SELECT COUNT( * )
+        FROM
+            links_to_be_processed
+        WHERE
+            url = #{url};
+    </select>
+
+    <insert id="insertNews">
+        INSERT INTO
+            crawler_news
+            ( title, content, url, created_at, modified_at )
+        VALUES
+            ( #{title}, #{content}, #{url}, now(), now())
+    </insert>
+</mapper>
