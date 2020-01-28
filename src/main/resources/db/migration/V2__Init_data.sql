@@ -1,0 +1,1 @@
+INSERT INTO "public"."links_to_be_processed"("url", "processed") VALUES ('links_to_be_processed', 'f');
