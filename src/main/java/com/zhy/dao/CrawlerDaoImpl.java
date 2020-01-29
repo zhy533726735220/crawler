@@ -8,6 +8,7 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 public class CrawlerDaoImpl implements ICrawlerDao {
 
@@ -74,5 +75,14 @@ public class CrawlerDaoImpl implements ICrawlerDao {
             sqlSession.commit();
         }
         return result;
+    }
+
+    @Override
+    public List<News> getNews() {
+        List<News> news =  null;
+        try (SqlSession sqlSession = this.sqlSessionFactory.openSession()) {
+            news = sqlSession.selectList("com.zhy.dao.mapper.getNews");
+        }
+        return news;
     }
 }

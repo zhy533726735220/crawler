@@ -39,4 +39,14 @@
         VALUES
             ( #{title}, #{content}, #{url}, now(), now())
     </insert>
+
+    <select id="getNews" resultType="com.zhy.vo.News">
+        SELECT
+            *
+        FROM
+            crawler_news
+        ORDER BY
+            ID ASC
+        LIMIT 1000;
+    </select>
 </mapper>
