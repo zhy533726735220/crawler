@@ -30,7 +30,6 @@ public class ElasticsearchDataGenerator {
                 map.put("title", vo.getTitle());
                 request.source(map, XContentType.JSON);
                 IndexResponse response = client.index(request, RequestOptions.DEFAULT);
-                
             }
 
         } catch (IOException e) {

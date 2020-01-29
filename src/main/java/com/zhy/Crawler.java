@@ -14,6 +14,7 @@ public class Crawler extends Thread {
     private ICrawlerDao iCrawlerDao = new CrawlerDaoImpl();
 
     private Object lock;
+
     public Crawler(Object lock) {
         this.lock = lock;
     }
